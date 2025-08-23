@@ -3,5 +3,5 @@
 version = 4
 
 [[package]]
-name = "rfc9839"
+name = "rfc9839-rs"
 version = "0.0.1"

@@ -1,3 +1,5 @@
+#![cfg_attr(not(test), no_std)]
+
 pub const fn is_unicode_surrotate(c: u32) -> bool {
     matches!(c, 0xd800..=0xdfff)
 }

@@ -1,7 +1,10 @@
 [package]
-name = "rfc9839"
+name = "rfc9839-rs"
 version = "0.0.1"
 edition = "2024"
 authors = ["Louis Sven Goulet"]
+repository = "https://github.com/lorlouis/rfc9839-rs"
+license = "MIT or Apache-2.0"
+keywords = ["unicode", "rfc9839", "bad unicode", "nostd"]
 
 [dependencies]
