@@ -6,5 +6,6 @@ authors = ["Louis Sven Goulet"]
 repository = "https://github.com/lorlouis/rfc9839-rs"
 license = "MIT or Apache-2.0"
 keywords = ["unicode", "rfc9839", "bad unicode", "nostd"]
+description = "A rust implementation of RFC9839 to test for problematic Unicode code points"
 
 [dependencies]
