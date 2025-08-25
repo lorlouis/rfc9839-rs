@@ -1,30 +1,54 @@
 #![cfg_attr(not(test), no_std)]
 
+//! # RFC9839-rs
+//!
+//! A rust implementation of RFC9839 to test for problematic Unicode code points
+
+
+/// Check if the value is either a low or high surrogate
+/// these characters should not be encoded as part of a UTF-8 stream.
 pub const fn is_unicode_surrotate(c: u32) -> bool {
-    matches!(c, 0xd800..=0xdfff)
+    matches!(c, 0xd800..=0xdbff | 0xdc00..=0xdfff)
 }
 
 pub mod control {
+    //! Characters which are part of the ASCII control character range or extended ASCII
+
+    /// Checks for `b'\n'`
     pub const fn is_newline(c: u32) -> bool {
         c == 0xa
     }
+
+    /// Checks for `b'\r'`
     pub const fn is_carriage_return(c: u32) -> bool {
         c == 0xd
     }
+
+    /// Checks for `b'\t'`
     pub const fn is_horizontal_tab(c: u32) -> bool {
         c == 0x9
     }
+
+
+    /// Checks for either `b'\n'`, `b'\r'` or `b\t`
     pub const fn is_useful_control(c: u32) -> bool {
         is_newline(c)
             || is_carriage_return(c)
             || is_horizontal_tab(c)
     }
+
+    /// Checks if the value falls into the ASCII control character range
     pub const fn is_c0_control(c: u32) -> bool {
         matches!(c, 0x0..=0x1f)
     }
+
+    /// Checks if the value falls into extended ASCII range
     pub const fn is_c1_control(c: u32) -> bool {
         matches!(c, 0x80..=0x9f)
     }
+
+    /// Checks if the value falls into the ASCII control character range
+    /// and isn't one of `b'\n'`, `b'\r'` or `b\t`
     pub const fn is_legacy_control(c: u32) -> bool {
         !is_useful_control(c)
             && (is_c0_control(c)
@@ -32,6 +56,10 @@ pub mod control {
     }
 }
 
+
+
+
+/// Checks if the value is outside the range of Unicode code points
 pub const fn is_noncharacter(c: u32) -> bool {
     matches!(c,
         0xfdd0..=0xfdef
@@ -55,6 +83,8 @@ pub const fn is_noncharacter(c: u32) -> bool {
     )
 }
 
+/// Any Unicode code point except high-surrogate and low-surrogate code points.
+/// As specified by Unicode 16
 pub struct UnicodeScalars {}
 
 impl UnicodeScalars {
@@ -63,6 +93,8 @@ impl UnicodeScalars {
     }
 }
 
+/// Unicode code points that excludes surrogates, legacy C0 controls, and the
+/// noncharacters U+FFFE and U+FFFF. As specified by the XML 1.0 specification.
 pub struct XmlCharacters {}
 
 impl XmlCharacters {
@@ -74,6 +106,7 @@ impl XmlCharacters {
     }
 }
 
+/// Unicode code points that are not problematic. As specified by RFC9839.
 pub struct UnicodeAssignables {}
 
 impl UnicodeAssignables {
@@ -112,7 +145,7 @@ mod test {
                     u);
             }
         }
-        for i in last..(char::MAX as u32) {
+        for i in last..=(char::MAX as u32) {
             assert!(
                 p(i) == false,
                 "{}: {:x} should not be included but is",
