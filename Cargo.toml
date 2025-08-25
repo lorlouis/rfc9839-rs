@@ -1,6 +1,6 @@
 [package]
 name = "rfc9839-rs"
-version = "0.0.1"
+version = "0.0.2"
 edition = "2024"
 authors = ["Louis Sven Goulet"]
 repository = "https://github.com/lorlouis/rfc9839-rs"
